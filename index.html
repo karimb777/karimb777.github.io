@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>007 Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>007 Game</h1>
+  <div id="game">
+  <p id="status">Choose your move:</p>
+  <button id="shootBtn" onclick="playerMove('shoot')">🔫 Shoot</button>
+  <button id="reloadBtn" onclick="playerMove('reload')">🔄 Reload</button>
+  <button id="blockBtn" onclick="playerMove('block')">🛡️ Block</button>
+
+  <p>Player Lives: <span id="playerLives">1</span></p>
+  <p>AI Lives: <span id="aiLives">1</span></p>
+  <p>Player Bullets: <span id="playerBullets">0</span></p>
+  <p>AI Bullets: <span id="aiBullets">0</span></p>
+</div>
+
+  <script src="script.js"></script>
+</body>
+
+<div id="extraStuff">
+  <h1>this is a test game</h1>
+  <h1>all of this is made of ai, yes. but im learning</h1>
+  <h1>and proof is that the typing here is made by instead of ai :D</h1>
+  <h1>kinda weird tho because I thought it would be better in style but yeah</h1>
+  <button onclick="alert('This is also a test')">hi</button>
+</div>
+
+<div id="gameOver" style="display: none;">
+  <h1 id="gameOverMessage"></h1>
+  <button onclick="restartGame()">🔁 Restart</button>
+</div>
