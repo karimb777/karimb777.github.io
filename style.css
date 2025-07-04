@@ -10,3 +10,95 @@ button {
   padding: 10px 20px;
   font-size: 20px;
 }
+body {
+  background-color: #050805;
+  color: #0f9d0f; /* darker, muted green */
+  font-family: 'Press Start 2P', monospace;
+  padding: 20px;
+  user-select: none;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, p, #status, #scoreboard {
+  text-shadow:
+    0 0 3px rgba(15, 157, 15, 0.8),
+    0 0 7px rgba(15, 157, 15, 0.6),
+    0 0 15px rgba(8, 128, 128, 0.4);
+  white-space: pre-line;
+}
+
+button {
+  background: transparent;
+  color: #0f9d0f;
+  border: 2px solid #0f9d0f;
+  padding: 12px 24px;
+  margin: 5px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow:
+    0 0 4px rgba(15, 157, 15, 0.8),
+    inset 0 0 7px rgba(15, 157, 15, 0.5);
+  transition: background-color 0.3s, color 0.3s;
+  image-rendering: pixelated;
+}
+
+button:hover {
+  background-color: #0f9d0f;
+  color: #050805;
+  box-shadow:
+    0 0 10px rgba(15, 157, 15, 1),
+    inset 0 0 12px rgba(15, 157, 15, 0.7);
+}
+
+#status, #scoreboard {
+  border: 1px solid #0f9d0f;
+  padding: 15px;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  background-color: rgba(15, 157, 15, 0.1);
+  box-shadow:
+    0 0 7px rgba(15, 157, 15, 0.4);
+  image-rendering: pixelated;
+}
+
+#gameOver {
+  color: #bb00bb;
+  font-weight: bold;
+  font-size: 1.5em;
+  text-align: center;
+  margin-top: 20px;
+  text-shadow:
+    0 0 8px #bb00bb,
+    0 0 15px #bb00bb;
+  image-rendering: pixelated;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+#status::after {
+  content: "_";
+  animation: blink 1s infinite;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(15, 157, 15, 0.03),
+    rgba(15, 157, 15, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 1000;
+  image-rendering: pixelated;
+}
