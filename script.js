@@ -1,8 +1,13 @@
+const shootSound = new Audio("shoot.mp3")
+const blockSound = new Audio("block.mp3")
+const reloadSound = new Audio("reload.mp3")
+const loseSound = new Audio("lose.mp3")
+const winsound = new Audio("win.mp3")
 let playerBullets = 0;  // bullets player currently has
 let aiBullets = 0;      // bullets AI currently has
 
-let playerLives = 1;    // player starts with 3 lives
-let aiLives = 1;        // AI starts with 3 lives
+let playerLives = 3;    // player starts with 3 lives
+let aiLives = 3;        // AI starts with 3 lives
 
 
 function playerMove(move) {
@@ -17,6 +22,7 @@ function playerMove(move) {
   // Player Shoots
   if (move === "shoot") {
     if (playerBullets > 0) {
+      shootSound.play();
       playerBullets--;
       if (aiMove !== "block") {
         aiLives--;
@@ -33,6 +39,7 @@ function playerMove(move) {
 
   // Player Reloads
   if (move === "reload") {
+    reloadSound.play()
     playerBullets++;
     resultText += "You reloaded a bullet.\n";
   }
@@ -52,6 +59,7 @@ function playerMove(move) {
 
         resultText += "AI hit you!\n";
       } else {
+        blockSound.play()
         resultText += "You blocked the AI's shot!\n";
       }
     } else {
@@ -82,9 +90,11 @@ function playerMove(move) {
 if (playerLives <= 0 && aiLives > 0) {
   playerLives = 0;
   showGameOver("You Lost!");
+  loseSound.play()
 } else if (aiLives <= 0 && playerLives > 0) {
   aiLives = 0;
   showGameOver("You Won!");
+  winsound.play()
 }
 
 
