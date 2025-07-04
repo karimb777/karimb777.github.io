@@ -37,6 +37,10 @@ function obliterate() {
 
 let winCount = Number(localStorage.getItem("wins")) || 0;
 let lossCount = Number(localStorage.getItem("losses")) || 0;
+function updateScoreboard() {
+  document.getElementById("scoreboard").textContent = `Wins: ${winCount} | Losses: ${lossCount}`;
+}
+updateScoreboard();
 
 const shootSound = new Audio("shoot.mp3")
 const blockSound = new Audio("block.mp3")
