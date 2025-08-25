@@ -1,98 +1,113 @@
-let cheatCode = "";
-window.addEventListener("keydown", function(e) {
-  cheatCode += e.key;
-  if (cheatCode.length > 3) {
-    cheatCode = cheatCode.slice(-3); // keep last 3 keys only
+const characters = {
+  averageGuy: {
+    name: "James",
+    moves: {
+      shoot: "Shoot",
+      reload: "Reload",
+      block: "Block"
+    }
+  },
+  neo: {
+    name: "Neo",
+    moves: {
+      shoot: "Bullet Time",
+      reload: "Code Up",
+      block: "Matrix Dodge"
+    }
+  },
+  goku: {
+    name: "Goku",
+    moves: {
+      shoot: "Kamehameha",
+      reload: "Charge ki",
+      block: "Instant Transmission"
+    }
+  },
+  yourPick: {
+    name: "Gem holder",
+    moves: {
+      shoot: "Shatter Pulse",
+      reload: "Core Charge",
+      block: "Null Guard"
+    }
+  },
+  Atem: {
+    name: "Atem",
+    moves: {
+      shoot: "Dark Magic Attack",
+      reload: "Draw Power",
+      block: "Defence mode"
+    },
+    perk: {
+      name: "Heart of the Cards",
+      used: false,
+      description: "When Atem has 1 life left, a random spell activates: Monster Reborn (heal 1) or Pot of Greed (get 2 bullets)."
+    }
   }
-  if (cheatCode === "777") {
-    activateCheat();
-    cheatCode = ""; // reset after activation
-  }
-});
-function activateCheat() {
-  // Change header text
-  document.querySelector("h1").textContent = "777 Game";
+};
 
-  // Show the obliterate button
-  document.getElementById("obliterateBtn").style.display = "inline-block";
-
-  // Optional: Show a cheat activated message
-  document.getElementById("status").textContent = "Cheat code activated! Obliterate button unlocked.";
-}
-
-function obliterate() {
-  aiLives = 0;
-  // Update UI immediately
-  document.getElementById("aiLives").textContent = aiLives;
-
-  // Trigger win sequence (reuse your existing code)
-  showGameOver("You Used Obliterate! You Won!");
-  winsound.play();
-  disableButtons();
-  winCount++;
-  localStorage.setItem("wins", winCount);
-  updateScoreboard();
-}
-
-
+let currentCharacter = characters.averageGuy;
 let winCount = Number(localStorage.getItem("wins")) || 0;
 let lossCount = Number(localStorage.getItem("losses")) || 0;
+
+let playerBullets = 0;
+let aiBullets = 0;
+let playerLives = 3;
+let aiLives = 3;
+
+let cheatCode = "";
+
+// 🎵 Sound effects
+const shootSound = new Audio("shoot.mp3");
+const blockSound = new Audio("block.mp3");
+const reloadSound = new Audio("reload.mp3");
+const loseSound = new Audio("lose.mp3");
+const winsound = new Audio("win.mp3");
+const dryfireSound = new Audio("dryfire.mp3");
+
 function updateScoreboard() {
   document.getElementById("scoreboard").textContent = `Wins: ${winCount} | Losses: ${lossCount}`;
+  if (winCount >= 20) {
+    const atemBtn = document.getElementById("atemBtn");
+    if (atemBtn) atemBtn.style.display = "inline-block";
+  }
 }
-updateScoreboard();
-
-const shootSound = new Audio("shoot.mp3")
-const blockSound = new Audio("block.mp3")
-const reloadSound = new Audio("reload.mp3")
-const loseSound = new Audio("lose.mp3")
-const winsound = new Audio("win.mp3")
-const dryfireSound = new Audio("dryfire.mp3")
-
-let playerBullets = 0;  // bullets player currently has
-let aiBullets = 0;      // bullets AI currently has
-
-let playerLives = 3;    // player starts with 3 lives
-let aiLives = 3;        // AI starts with 3 lives
 
 function getSmartAiMove() {
   const moves = ["shoot", "reload", "block"];
+  const mistakeChance = 0.2;
 
-  const mistakeChance = 0.2; // 20% chance to mess up
   if (Math.random() < mistakeChance) {
     return moves[Math.floor(Math.random() * moves.length)];
   }
 
-  if (aiBullets > 0 && playerBullets === 0) {
-    return "shoot";
-  }
-
-  if (aiBullets === 0) {
-    return "reload";
-  }
-
-  if (playerBullets > 0) {
-    return "block";
-  }
-
-  if (aiBullets > 0) {
-    return "shoot";
-  }
-
-  return "reload"; // fallback
+  if (aiBullets > 0 && playerBullets === 0) return "shoot";
+  if (aiBullets === 0) return "reload";
+  if (playerBullets > 0) return "block";
+  return "reload";
 }
-
-function updateScoreboard() {
-  document.getElementById("scoreboard").textContent = `Wins: ${winCount} | Losses: ${lossCount}`;
-}
-updateScoreboard();
 
 function playerMove(move) {
   const aiMove = getSmartAiMove();
+  let resultText = `You used: ${currentCharacter.moves[move]} | AI picked: ${aiMove}\n`;
 
-  let resultText = `You picked: ${move} | AI picked: ${aiMove}\n`;
+  // 🃏 Atem perk
+  if (
+    currentCharacter.name === "Atem" &&
+    !currentCharacter.perk.used &&
+    playerLives === 1
+  ) {
+    currentCharacter.perk.used = true;
+    const rng = Math.random();
+    if (rng < 0.5) {
+      playerBullets += 2;
+      resultText += "\n✨ Atem activated *Pot of Greed*! +2 bullets!";
+    } else {
+      playerLives += 1;
+      resultText += "\n✨ Atem activated *Monster Reborn*! +1 life!";
+    }
+  }
 
-  // Player Shoots
   if (move === "shoot") {
     if (playerBullets > 0) {
       shootSound.play();
@@ -109,19 +124,16 @@ function playerMove(move) {
     }
   }
 
-  // Player Reloads
   if (move === "reload") {
     reloadSound.play();
     playerBullets++;
     resultText += "You reloaded a bullet.\n";
   }
 
-  // Player Blocks
   if (move === "block") {
     resultText += "You blocked.\n";
   }
 
-  // AI Shoots
   if (aiMove === "shoot") {
     if (aiBullets > 0) {
       aiBullets--;
@@ -137,50 +149,41 @@ function playerMove(move) {
     }
   }
 
-  // AI Reloads
   if (aiMove === "reload") {
     aiBullets++;
     resultText += "AI reloaded a bullet.\n";
   }
 
-  // Update the status text on the screen
   document.getElementById("status").textContent = resultText;
-
-  // Update bullets and lives on screen
   document.getElementById("playerBullets").textContent = playerBullets;
   document.getElementById("aiBullets").textContent = aiBullets;
   document.getElementById("playerLives").textContent = playerLives;
   document.getElementById("aiLives").textContent = aiLives;
 
-  // Check for win/loss and update counters
   if (playerLives <= 0 && aiLives > 0) {
     playerLives = 0;
-    loseSound.play()
+    loseSound.play();
     lossCount++;
     localStorage.setItem("losses", lossCount);
     showGameOver("You Lost!");
-    loseSound.play();
     disableButtons();
     updateScoreboard();
-    return;
   } else if (aiLives <= 0 && playerLives > 0) {
     aiLives = 0;
-    winsound.play()
+    winsound.play();
     winCount++;
     localStorage.setItem("wins", winCount);
     showGameOver("You Won!");
-    winsound.play();
     disableButtons();
     updateScoreboard();
-    return;
   }
 }
 
 function disableButtons() {
-  document.getElementById("shootBtn").disabled = true;
-  document.getElementById("reloadBtn").disabled = true;
-  document.getElementById("blockBtn").disabled = true;
-  document.getElementById("extraStuff").disabled = true;
+  ["shootBtn", "reloadBtn", "blockBtn", "extraStuff"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.disabled = true;
+  });
 }
 
 function showGameOver(message) {
@@ -196,6 +199,10 @@ function restartGame() {
   playerLives = 3;
   aiLives = 3;
 
+  if (currentCharacter.perk) {
+    currentCharacter.perk.used = false;
+  }
+
   document.getElementById("status").textContent = "Choose your move:";
   document.getElementById("playerLives").textContent = playerLives;
   document.getElementById("aiLives").textContent = aiLives;
@@ -206,17 +213,52 @@ function restartGame() {
   document.getElementById("gameOver").style.display = "none";
   document.getElementById("extraStuff").style.display = "block";
 
-  document.getElementById("shootBtn").disabled = false;
-  document.getElementById("reloadBtn").disabled = false;
-  document.getElementById("blockBtn").disabled = false;
+  ["shootBtn", "reloadBtn", "blockBtn"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.disabled = false;
+  });
 
-  // **Hide the obliterate button when restarting**
   document.getElementById("obliterateBtn").style.display = "none";
-
-  // **Reset the header text back to 007 Game**
   document.querySelector("h1").textContent = "007 Game";
-
-  // Reset the cheatCode tracker in case of partial input leftover
   cheatCode = "";
 }
 
+function selectCharacter(key) {
+  currentCharacter = characters[key];
+  document.getElementById("characterSelect").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  document.getElementById("status").textContent = `Agent Selected: ${currentCharacter.name}`;
+
+  document.getElementById("shootBtn").textContent = "🔫 " + currentCharacter.moves.shoot;
+  document.getElementById("reloadBtn").textContent = "🔄 " + currentCharacter.moves.reload;
+  document.getElementById("blockBtn").textContent = "🛡️ " + currentCharacter.moves.block;
+}
+
+// Cheat Code: "777"
+window.addEventListener("keydown", function (e) {
+  cheatCode += e.key;
+  if (cheatCode.length > 3) cheatCode = cheatCode.slice(-3);
+  if (cheatCode === "777") {
+    activateCheat();
+    cheatCode = "";
+  }
+});
+
+function activateCheat() {
+  document.querySelector("h1").textContent = "777 Game";
+  document.getElementById("obliterateBtn").style.display = "inline-block";
+  document.getElementById("status").textContent = "Cheat code activated! Obliterate button unlocked.";
+}
+
+function obliterate() {
+  aiLives = 0;
+  document.getElementById("aiLives").textContent = aiLives;
+  showGameOver("You Used Obliterate! You Won!");
+  winsound.play();
+  disableButtons();
+  winCount++;
+  localStorage.setItem("wins", winCount);
+  updateScoreboard();
+}
+
+updateScoreboard();
