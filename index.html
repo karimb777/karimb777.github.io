@@ -1,47 +1,80 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>007 Game</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <h1>007 Game</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>007 Game - Agent Duel</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1 id="gameTitle">007 Game</h1>
     <p id="scoreboard">Wins: 0 | Losses: 0</p>
+
+    <!-- Character Selection Screen -->
     <div id="characterSelect">
-  <h2>Select Your Agent</h2>
-  <button id="atemBtn" style="display:none;" onclick="selectCharacter('Atem')">Atem</button>
-
-  <button onclick="selectCharacter('averageGuy')">James</button>
-  <button onclick="selectCharacter('neo')">🕶️ Agent</button>
-  <button onclick="selectCharacter('goku')">🔥 Kakarot</button>
-  <button onclick="selectCharacter('yourPick')">💎 Gem holder</button>
-</div>
-
-    <div id="game">
-      <p id="status">Choose your move:</p>
-      <button id="shootBtn" onclick="playerMove('shoot')">🔫 Shoot</button>
-      <button id="reloadBtn" onclick="playerMove('reload')">🔄 Reload</button>
-      <button id="blockBtn" onclick="playerMove('block')">🛡️ Block</button>
-
-
-
-      <!-- Hidden Obliterate button inside #game -->
-      <button id="obliterateBtn" style="display:none;" onclick="obliterate()">Obliterate</button>
-
-      <p>Player Lives: <span id="playerLives">3</span></p>
-      <p>AI Lives: <span id="aiLives">3</span></p>
-      <p>Player Bullets: <span id="playerBullets">0</span></p>
-      <p>AI Bullets: <span id="aiBullets">0</span></p>
+      <h2>Select Your Agent</h2>
+      <div class="character-grid">
+        <button onclick="selectCharacter('averageGuy')" class="character-btn">
+          🕴️ James
+        </button>
+        <button onclick="selectCharacter('neo')" class="character-btn">
+          🕶️ Neo
+        </button>
+        <button onclick="selectCharacter('goku')" class="character-btn">
+          🔥 Goku
+        </button>
+        <button onclick="selectCharacter('yourPick')" class="character-btn">
+          💎 Gem Holder
+        </button>
+        <button id="atemBtn" onclick="selectCharacter('atem')" class="character-btn special" style="display:none;">
+          🃏 Atem
+          <span class="unlock-text">(Unlocked!)</span>
+        </button>
+      </div>
     </div>
 
+    <!-- Main Game Screen -->
+    <div id="game" style="display: none;">
+      <div id="status" class="status-box">Choose your move:</div>
+      
+      <div class="stats-container">
+        <div class="player-stats">
+          <h3>You</h3>
+          <p>Lives: <span id="playerLives" class="stat-value">3</span></p>
+          <p>Bullets: <span id="playerBullets" class="stat-value">0</span></p>
+        </div>
+        
+        <div class="vs-divider">VS</div>
+        
+        <div class="ai-stats">
+          <h3>AI</h3>
+          <p>Lives: <span id="aiLives" class="stat-value">3</span></p>
+          <p>Bullets: <span id="aiBullets" class="stat-value">0</span></p>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="shootBtn" onclick="playerMove('shoot')" class="action-btn"></button>
+        <button id="reloadBtn" onclick="playerMove('reload')" class="action-btn"></button>
+        <button id="blockBtn" onclick="playerMove('block')" class="action-btn"></button>
+      </div>
+
+      <button id="obliterateBtn" onclick="obliterate()" class="cheat-btn" style="display:none;">
+        ⚡ Obliterate
+      </button>
+    </div>
+
+    <!-- Game Over Screen -->
     <div id="gameOver" style="display: none;">
-      <h1 id="gameOverMessage"></h1>
-      <button onclick="window.location.reload();">🔁 Restart</button>
+      <h2 id="gameOverMessage" class="game-over-message"></h2>
+      <button onclick="restartGame()" class="restart-btn">
+        🔁 Play Again
+      </button>
     </div>
+  </div>
 
-    <script src="script.js"></script>
-  </body>
-  </html>
-<button id="Test" onclick="window.location.reload();">Test</button>
+  <script src="script.js"></script>
+</body>
+</html>
